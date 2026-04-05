@@ -1,0 +1,36 @@
+services:
+  api:
+    image: golang:1.22
+    working_dir: /app
+    volumes:
+      - ./:/app
+      - go-mod-cache:/go/pkg/mod
+    environment:
+      MONGO_URI: mongodb://mongo:27017/
+      MONGO_DB: weather_db
+      PORT: "5000"
+      API_SECRET: dev-secret-change-me
+    command: sh -c "go mod download && go run ."
+    ports:
+      - "5000:5000"
+    depends_on:
+      mongo:
+        condition: service_healthy
+
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD-SHELL", "echo 'db.runCommand({ ping: 1 })' | mongosh mongodb://localhost:27017/admin --quiet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mongo-data:
+  go-mod-cache:
