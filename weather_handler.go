@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/v2/bson"
+	"go.mongodb.org/mongo-driver/v2/mongo"
 )
 
 func makeWeatherHandler(weatherCollection *mongo.Collection) http.HandlerFunc {
@@ -140,7 +140,7 @@ func makeCreateWeatherHandler(weatherCollection *mongo.Collection) http.HandlerF
 
 		_, err := weatherCollection.InsertOne(insertCtx, payload)
 		if err != nil {
-			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "database error"})
+			writeJSON(w, http.StatusInternalServerError, map[string]string{"error": "database error, err: " + err.Error()})
 			return
 		}
 

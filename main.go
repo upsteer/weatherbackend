@@ -10,25 +10,34 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/v2/mongo"
+	"go.mongodb.org/mongo-driver/v2/mongo/options"
 )
 
 func main() {
 	_ = godotenv.Load()
 
-	mongoURI := getEnv("MONGO_URI", "mongodb://localhost:27017/")
+	mongoURI := getEnv("MONGO_URI", "")
 	mongoDB := getEnv("MONGO_DB", "weather_db")
 	dbCollection := getEnv("MONGO_COLLECTION", "weather")
 	port := getEnv("PORT", "5000")
 	apiSecret := getEnv("API_SECRET", "dev-secret-change-me")
 
+	if mongoURI == "" {
+		log.Fatal("MONGO_URI environment variable is required")
+		return
+	}
+
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
+	client, err := mongo.Connect(options.Client().ApplyURI(mongoURI))
 	if err != nil {
 		log.Fatalf("failed to connect to mongo: %v", err)
+	}
+
+	if err := client.Ping(ctx, nil); err != nil {
+		log.Fatalf("failed to ping mongo: %v", err)
 	}
 	defer func() {
 		disconnectCtx, disconnectCancel := context.WithTimeout(context.Background(), 5*time.Second)

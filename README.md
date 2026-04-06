@@ -46,13 +46,15 @@ cp .env.example .env
 Default `.env.example`:
 
 ```env
-MONGO_URI=mongodb://localhost:27017/
+MONGO_URI=mongodb+srv://<username>:<password>@<cluster-host>/<db-name>?retryWrites=true&w=majority
 MONGO_DB=weather_db
+MONGO_COLLECTION=weather
 PORT=5000
 API_SECRET=dev-secret-change-me
 ```
 
-If you use MongoDB Atlas, set `MONGO_URI` to your Atlas connection string.
+Use your MongoDB Atlas SRV connection string for `MONGO_URI`.
+If your password contains special characters, URL-encode it before placing it in the URI.
 
 ## 3. Run the Service
 
@@ -93,7 +95,7 @@ Example response:
 ## Common Issues
 
 - Connection error to MongoDB:
-	- Ensure MongoDB is running locally, or verify your Atlas URI and network access.
+	- Verify your Atlas SRV URI, database user/password, and Atlas network access list.
 - Missing Go modules:
 	- Run `go mod tidy` and try `go run .` again.
 - Unauthorized responses:
