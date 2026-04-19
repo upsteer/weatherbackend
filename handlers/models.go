@@ -1,10 +1,27 @@
-package main
+package handlers
 
 type weatherResponse struct {
-	Location     string `json:"location" bson:"location"`
-	Date         string `json:"date" bson:"date"`
-	TemperatureC int    `json:"temperature_c" bson:"temperature_c"`
-	Condition    string `json:"condition" bson:"condition"`
+	Location      string  `json:"location" bson:"location"`
+	Date          string  `json:"date" bson:"date"`
+	TemperatureC  float64 `json:"temperature_c" bson:"temperature_c"`
+	Condition     string  `json:"condition" bson:"condition"`
+	High          int     `json:"high" bson:"high"`
+	Low           int     `json:"low" bson:"low"`
+	WindSpeed     int     `json:"wind_speed" bson:"wind_speed"`
+	Precipitation float64 `json:"precipitation" bson:"precipitation"`
+	LastUpdated   string  `json:"last_updated" bson:"last_updated"`
+}
+
+type weeklyForecastDay struct {
+	Date           string `json:"date"`
+	MaxTemperature int    `json:"max_temperature"`
+	MinTemperature int    `json:"min_temperature"`
+}
+
+type weeklyForecastResponse struct {
+	Location    string              `json:"location"`
+	LastUpdated string              `json:"last_updated"`
+	Forecasts   []weeklyForecastDay `json:"forecasts"`
 }
 
 type dailyForecast struct {
@@ -41,16 +58,18 @@ type hourlyForecast struct {
 }
 
 type weatherCreateRequest struct {
-	PlaceID        string           `json:"place_id" bson:"place_id"`
-	DisplayName    string           `json:"display_name" bson:"display_name"`
-	CityDistrict   string           `json:"city_district" bson:"city_district"`
-	Municipality   string           `json:"municipality" bson:"municipality"`
-	County         string           `json:"county" bson:"county"`
-	Province       string           `json:"province" bson:"province"`
-	Country        string           `json:"country" bson:"country"`
-	Distance       float64          `json:"distance" bson:"distance"`
-	ForecastDate   string           `json:"forecast_date" bson:"forecast_date"`
-	Stations       []any            `json:"stations" bson:"stations"`
-	DailyForecast  []dailyForecast  `json:"daily_forecast" bson:"daily_forecast"`
-	HourlyForecast []hourlyForecast `json:"hourly_forecast" bson:"hourly_forecast"`
+	PlaceID          string           `json:"place_id" bson:"place_id"`
+	DisplayName      string           `json:"display_name" bson:"display_name"`
+	CityDistrict     string           `json:"city_district" bson:"city_district"`
+	Municipality     string           `json:"municipality" bson:"municipality"`
+	MunicipalityNorm string           `json:"-" bson:"municipality_norm"`
+	County           string           `json:"county" bson:"county"`
+	Province         string           `json:"province" bson:"province"`
+	Country          string           `json:"country" bson:"country"`
+	Distance         float64          `json:"distance" bson:"distance"`
+	ForecastDate     string           `json:"forecast_date" bson:"forecast_date"`
+	ForecastDay      string           `json:"-" bson:"forecast_day"`
+	Stations         []any            `json:"stations" bson:"stations"`
+	DailyForecast    []dailyForecast  `json:"daily_forecast" bson:"daily_forecast"`
+	HourlyForecast   []hourlyForecast `json:"hourly_forecast" bson:"hourly_forecast"`
 }
